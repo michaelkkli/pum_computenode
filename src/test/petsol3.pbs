@@ -1,0 +1,83 @@
+#!/bin/bash
+# PBS batch file written according to "PBSProUserGuide9.1.pdf".
+#PBS -V
+
+# Interdisciplinary Programme for Cellular Regulation
+# 17 x 2-way 2.0 GHz AMD Opteron SMP, 4 GB each (68 GB total).
+# SuSE Linux Enterprise 9, PBS Pro.
+# Installed January 2005. Expected end of life January 2009.
+
+# CSC IBM Cluster
+# 240 x 2-way dual core 3.0 GHz Intel Xeon 5160 (960 core), 8GB each.
+# SuSE Linux Enterprise Server 10, PBS Pro.
+# Commissioned January 2008.
+
+#PBS -l select=4:ncpus=4:mpiprocs=4:ompthreads=1:mem=7500mb,walltime=05:10:00
+
+# Join stdout and stderr into one stream.
+#PBS -j oe
+
+# Mail on begin (b), abort (a), and job ending (e).
+#PBS -M mike.li.uk@gmail.com
+#PBS -m bae
+
+# Job is rerunnable if terminated: requeue in same execution queue.
+#PBS -r y
+
+# Submit job with
+#	 qsub -N new_job_name my_job
+# to name jobs.
+
+echo "User ${PBS_O_LOGNAME} has run jobid ${PBS_JOBID} of queue ${PBS_QUEUE} \
+on host ${PBS_O_HOST} with shell ${PBS_O_SHELL}, home ${PBS_O_HOME}, and \
+path ${PBS_O_PATH}."
+
+echo "The user submitted the job from workdir ${PBS_WORK_O_DIR} and \
+the tmpdir is ${TMPDIR}."
+
+if [ -n "${PBS_NODEFILE}" ] ; then
+   echo "The content of the nodefile was "
+   cat "${PBS_NODEFILE}"
+   echo ""
+else
+   echo "Environment variable PBS_NODEFILE was not set: PROBLEM for MPI!"
+fi
+
+if [ -n "${NCPUS}" ] ; then
+   echo "The number of cores (NCPUS) is ${NCPUS}."
+else
+   echo "The number of cores (NCPUS) is not set."
+fi
+
+if [ -n "${OMP_NUM_THREADS}" ] ; then
+   echo "OMP_NUM_THREADS is set to ${OMP_NUM_THREADS}."
+else
+   echo "OMP_NUM_THREADS is not set."
+fi
+
+echo "Date call at beginning $(date)."
+
+cd $PBS_O_WORKDIR
+
+/usr/bin/time -v mpiexec  valgrind --tool=callgrind \
+	./petsc_solver-3 -dom extract_geometry_2d-1_contour.off \
+	                              -dtree_initial_refinement 8 \
+	                              -image1 initial_condition.tif \
+	                              -diffusion1 30.0 \
+	                              -global_bleach1 0.005 \
+	                              -bleach_x_centre1 246.0 \
+	                              -bleach_y_centre1 211.0 \
+	                              -bleach_param1 5.0 \
+	                              -bleach_radius1 8.33 \
+                                      -begin_bleach1 1 \
+                                      -end_bleach1 50 \
+                                      -local_basis_order 1 \
+                                      -assembly_quadrature_rule 4 -vtk_out 3 -simulation_mode 1 \
+	                              -min_iter_info false
+
+
+#STORED_EXIT_STATUS=$?
+
+echo "Date call at end $(date)."
+
+#return ${STORED_EXIT_STATUS}

@@ -1,0 +1,41 @@
+#!/bin/sh
+
+# Place script in /usr/lib/mpich/bin
+# mpirun -np 4 -dbg=valgrind ./petsc_solver-3
+# From http://www.hlrs.de/people/keller/MPI/mpich_valgrind.html
+
+# mpirun -np 2 -dbg=valgrind ./a.out
+
+cmdLineArgs=""
+p4pgfile=""
+p4workdir=""
+prognamemain=""
+
+while [ 1 -le $# ] ; do
+    echo  Arg is $arg
+  arg=$1
+  shift
+  case $arg in
+     -cmdlineargs)
+        cmdLineArgs="$1"
+        shift
+        ;;
+     -p4pg)
+        p4pgfile="$1"
+        shift
+        ;;
+     -p4wd)
+        p4workdir="$1"
+        shift
+        ;;
+     -progname)
+        prognamemain="$1"
+        shift
+        ;;
+  esac
+done
+#
+#valgrind --tool=callgrind --error-limit=no --num-callers=10
+#         --suppressions=/usr/local/lib/valgrind/mpich-1.2.4.supp
+#         $prognamemain $cmdLineArgs -p4pg $p4pgfile -p4wd $p4workdir
+valgrind --tool=callgrind --error-limit=no --num-callers=10  $prognamemain $cmdLineArgs -p4pg $p4pgfile -p4wd $p4workdir

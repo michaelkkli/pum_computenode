@@ -1,0 +1,88 @@
+#! /usr/bin/python
+##
+##	Copyright (C) 2009 Michael Li
+##	This file is part of the Computenode Library.
+##
+##	The Computenode Library is free software: you can redistribute it and/or modify
+##	it under the terms of the GNU General Public License as published by
+##	the Free Software Foundation, either version 3 of the License, or
+##	(at your option) any later version.
+##
+##	This program is distributed in the hope that it will be useful,
+##	but WITHOUT ANY WARRANTY; without even the implied warranty of
+##	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+##	GNU General Public License for more details.
+##
+##	You should have received a copy of the GNU General Public License
+##	along with this program. If not, see <http://www.gnu.org/licenses/>.
+##
+
+Import('BuildEnv', 'MainAlias' )
+Export('BuildEnv', 'MainAlias' )
+
+BuildEnvLocal = BuildEnv.Copy()
+
+BuildEnvLocal.Prepend( LIBS=['computenode'] )
+
+#BuildEnvLocal.Append( LIBS=['computenode',
+#                            'petscts',
+#                            'petscsnes',
+#                            'petscksp',
+#                            'petscdm',
+#                            'petscmat',
+#                            'petscvec',
+#                            'petsc',
+#                            'X11',
+#                            'sundials_cvode',
+#                            'sundials_nvecserial',
+#                            'sundials_nvecparallel'] )
+
+BuildEnvLocal.Program( 'box-1.cc' )
+
+BuildEnvLocal.Program( 'polynomial-1.cc' )
+
+BuildEnvLocal.Program( 'mpipbs-1.cc' )
+
+
+
+BuildEnvLocal.Program( 'single_patch_approx-1.cc' )
+
+# Commented out 2008-11-29
+#BuildEnvLocal.Program( 'integration_scheme-1.cc' )
+
+
+BuildEnvLocal.Program( 'dbinary_tree-1.cc' )
+
+BuildEnvLocal.Program( 'pum_discretization-1.cc' )
+
+BuildEnvLocal.Program( 'hacker_shimrat_algorithm112-1.cc' )
+
+BuildEnvLocal.Program( 'petsc-1.cc' )
+BuildEnvLocal.Program( 'petsc-2.cc' )
+
+BuildEnvLocal.Program( 'quadrature_rule-1.cc' )
+BuildEnvLocal.Program( 'quadrature_rule-2.cc' )
+BuildEnvLocal.Program( 'quadrature_rule-3.cc' )
+
+BuildEnvLocal.Program( 'global_approximation_space-1.cc' )
+
+#BuildEnvLocal.Program( 'petsc_solver-1.cc' )
+BuildEnvLocal.Program( 'petsc_solver-3.cc' )
+
+BuildEnvLocal.Program( 'extract_geometry_2d-1.cc' )
+BuildEnvLocal.Program( 'line_segments-1.cc' )
+
+BuildEnvLocal.Program( 'pum_convergence-1.cc' )
+BuildEnvLocal.Program( 'pum_convergence-2.cc' )
+BuildEnvLocal.Program( 'pum_convergence-3.cc' )
+
+# Commented out 2008-11-29
+#BuildEnvLocal.Program( 'petsc_solver-4.cc' )
+#BuildEnvLocal.Program( 'vtk_output-1.cc' )
+#BuildEnvLocal.Program( 'vtk_output-2.cc' )
+
+#BuildEnvLocal.Program( 'integration_scheme-1.cc' )
+
+#BuildEnvLocal.Program( 'solution-1.cc' )
+
+

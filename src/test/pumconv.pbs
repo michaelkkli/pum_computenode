@@ -1,0 +1,80 @@
+#!/bin/bash
+# PBS batch file written according to "PBSProUserGuide9.1.pdf".
+#PBS -V
+
+# Interdisciplinary Programme for Cellular Regulation
+# 17 x 2-way 2.0 GHz AMD Opteron SMP, 4 GB each (68 GB total).
+# SuSE Linux Enterprise 9, PBS Pro.
+# Installed January 2005. Expected end of life January 2009.
+
+# CSC IBM Cluster
+# 240 x 2-way dual core 3.0 GHz Intel Xeon 5160 (960 core), 8GB each.
+# SuSE Linux Enterprise Server 10, PBS Pro.
+# Commissioned January 2008.
+
+#PBS -l select=4:ncpus=4:mpiprocs=1:ompthreads=4:mem=7800mb,walltime=10:10:00
+
+# Join stdout and stderr into one stream.
+#PBS -j oe
+
+# Mail on begin (b), abort (a), and job ending (e).
+#PBS -M mike.li.uk@gmail.com
+#PBS -m bae
+
+# Job is rerunnable if terminated: requeue in same execution queue.
+#PBS -r y
+
+# Submit job with
+#	 qsub -N new_job_name my_job
+# to name jobs.
+
+echo "User ${PBS_O_LOGNAME} has run jobid ${PBS_JOBID} of queue ${PBS_QUEUE} \
+on host ${PBS_O_HOST} with shell ${PBS_O_SHELL}, home ${PBS_O_HOME}, and \
+path ${PBS_O_PATH}."
+
+echo "The user submitted the job from workdir ${PBS_WORK_O_DIR} and \
+the tmpdir is ${TMPDIR}."
+
+if [ -n "${PBS_NODEFILE}" ] ; then
+   echo "The content of the nodefile was "
+   cat "${PBS_NODEFILE}"
+   echo ""
+else
+   echo "Environment variable PBS_NODEFILE was not set: PROBLEM for MPI!"
+fi
+
+if [ -n "${NCPUS}" ] ; then
+   echo "The number of cores (NCPUS) is ${NCPUS}."
+else
+   echo "The number of cores (NCPUS) is not set."
+fi
+
+if [ -n "${OMP_NUM_THREADS}" ] ; then
+   echo "OMP_NUM_THREADS is set to ${OMP_NUM_THREADS}."
+else
+   echo "OMP_NUM_THREADS is not set."
+fi
+
+echo "Date call at beginning $(date)."
+
+cd $PBS_O_WORKDIR
+
+if [[ -x /usr/bin/time ]] ; then timer="/usr/bin/time -v" ; else timer="" ; fi
+
+#  Without openmp:    -pc_type asm \
+#    -openmp_merge_size 4 -pc_type openmp -ksp_type preonly \
+${timer} mpiexec ./pum_convergence-1 \
+    -dom unit_box.off \
+    -parent_box_expansion_factor 1.01 \
+    -cover_factor 1.3 \
+    -initial_refinement 1 \
+    -max_refinement 9 \
+    -local_basis_order 1 \
+    -box_interior_quad_rule 9 \
+    -ksp_rtol 1e-6 \
+    -ksp_gmres_restart 500 \
+ > pum_convergence-1_log_${PBS_JOBNAME}.txt  2>&1
+
+echo "Date call at end $(date)."
+
+#return ${STORED_EXIT_STATUS}

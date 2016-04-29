@@ -1,0 +1,65 @@
+#! /usr/bin/python
+##
+##	Copyright (C) 2009 Michael Li
+##	This file is part of the Computenode Library.
+##
+##	The Computenode Library is free software: you can redistribute it and/or modify
+##	it under the terms of the GNU General Public License as published by
+##	the Free Software Foundation, either version 3 of the License, or
+##	(at your option) any later version.
+##
+##	This program is distributed in the hope that it will be useful,
+##	but WITHOUT ANY WARRANTY; without even the implied warranty of
+##	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+##	GNU General Public License for more details.
+##
+##	You should have received a copy of the GNU General Public License
+##	along with this program. If not, see <http://www.gnu.org/licenses/>.
+##
+
+Import('BuildEnv', 'MainAlias' )
+Export('BuildEnv', 'MainAlias' )
+
+BuildEnvLocal = BuildEnv.Copy()
+
+code = ["hacker_shimrat_algorithm112.cc",
+	"point_utils.cc",
+        "box.cc",
+        "box_utils.cc",
+	"basic_dbinary_tree.cc",
+	"cover_structure.cc",
+        "dbinary_tree.cc",
+	"dbinary_tree_utils.cc",
+        "boundary_element.cc",
+	"boundary_element_utils.cc",
+        "boundary.cc",
+	"geometry.cc",
+	"geometry_utils.cc",
+	"function.cc",
+	"differentiable_function.cc",
+        "polynomial.cc",
+        "quadrature_rule.cc",
+	"cubic_spline_weight.cc",
+	"global_basis_function.cc",
+	"global_approximation_space.cc",
+	"indicator_function.cc",
+	"integration_scheme.cc",
+	"partition_of_unity_function.cc",
+	"petsc_solver.cc",
+	"solution.cc",
+	"solution_evaluation_structure.cc",
+	"vtk_output.cc",
+	"line_segments.cc",
+	"key_utils.cc",
+	"refinement_structure.cc",
+	"extract_geometry_2d.cc",
+	"singleimage.cc",
+	"basic_dbinary_tree_utils.cc",
+        "pum_convergence.cc"]
+
+        #"pum_discretization_approx.cc"]
+
+
+BuildEnvLocal.Library( 'computenode', code )
+
+SConscript( "test/SConscript" )
